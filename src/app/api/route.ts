@@ -1,4 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { NextResponse } from 'next/server'
+
 import { Configuration, OpenAIApi } from 'openai'
 
 const configuration = new Configuration({
@@ -6,7 +7,8 @@ const configuration = new Configuration({
 })
 const openai = new OpenAIApi(configuration)
 
-export async function POOTOT(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: Request, res: Response) {
+	console.log(req.body)
 	const completion = await openai.createCompletion({
 		model: 'text-davinci-003',
 		prompt: `The CSS code for a color like ${req.body.text}:\n\nbackground-color: #`,
@@ -17,5 +19,5 @@ export async function POOTOT(req: NextApiRequest, res: NextApiResponse) {
 		presence_penalty: 0.0,
 		stop: [';'],
 	})
-	res.status(200).json({ result: completion.data })
+	NextResponse.json({ result: completion.data })
 }

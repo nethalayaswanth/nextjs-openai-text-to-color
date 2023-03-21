@@ -2,43 +2,46 @@
 
 import React from 'react'
 
-
-
 export const ColorText = () => {
 	const [value, setValue] = React.useState<string>('')
 	const [prompt, setPrompt] = React.useState<string>('')
 	const [color, setColor] = React.useState<string>('')
 
-	const handleInput = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(e.target.value)
-	}, [])
+	}
 
-	const handleKeyDown = React.useCallback(
-		async (e: React.KeyboardEvent<HTMLInputElement>) => {
-			if (e.key === 'Enter') {
-				setPrompt(value)
-				setColor('Loading...')
-				const response = await fetch('/api', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ text: value }),
-				})
-				const data = await response.json()
-				setValue('')
-				setColor(`#${data.result.choices[0].text}`)
-			}
-		},
-		[value]
-	)
+	const getColor = async () => {
+		setPrompt(value)
+		setColor('Loading...')
+		const response = await fetch('/api', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ text: value }),
+		})
+		const data = await response.json()
+		setValue('')
 
-	React.useEffect(() => {
-		// change background color
+		console.log(data)
+		const color = data.result.choices[0].text
 		if (color) {
-			document.body.style.background = color
+			setColor(`#${color}`)
+			if (color) {
+				document.body.style.background = `#${color}`
+			}
 		}
-	})
+	}
+	const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			getColor()
+		}
+	}
+
+	const handleClick = async () => {
+		getColor()
+	}
 
 	return (
 		<>
@@ -60,9 +63,12 @@ export const ColorText = () => {
 							placeholder="Enter Your Text Description"
 						/>
 						<div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-							<kbd className="inline-flex items-center border border-gray-800 rounded px-2 text-sm font-sans font-medium text-gray-800">
-								↵ Return
-							</kbd>
+							<button
+								onClick={handleClick}
+								className="inline-flex items-center border border-gray-800 rounded px-2 text-sm font-sans font-medium text-gray-800"
+							>
+								GET COLOR
+							</button>
 						</div>
 					</div>
 				</div>
