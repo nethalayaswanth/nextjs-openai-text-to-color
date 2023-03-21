@@ -2,6 +2,8 @@
 
 import React from 'react'
 
+
+
 export const ColorText = () => {
 	const [value, setValue] = React.useState<string>('')
 	const [prompt, setPrompt] = React.useState<string>('')
@@ -16,7 +18,7 @@ export const ColorText = () => {
 			if (e.key === 'Enter') {
 				setPrompt(value)
 				setColor('Loading...')
-				const response = await fetch('/api/openai', {
+				const response = await fetch('/api', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
