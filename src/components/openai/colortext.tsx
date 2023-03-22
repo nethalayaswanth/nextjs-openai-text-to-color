@@ -12,6 +12,7 @@ export const ColorText = () => {
 	}
 
 	const getColor = async () => {
+		if (value.trim().length !== 0) return
 		setPrompt(value)
 		setColor('Loading...')
 		const response = await fetch('/api', {
@@ -21,15 +22,17 @@ export const ColorText = () => {
 			},
 			body: JSON.stringify({ text: value }),
 		})
+
+		console.log(response, 'wer')
 		const data = await response.json()
 		setValue('')
 
 		console.log(data)
 		const color = data.result.choices[0].text
 		if (color) {
-			setColor(`#${color}`)
+			setColor(`${color}`)
 			if (color) {
-				document.body.style.background = `#${color}`
+				document.body.style.background = `${color}`
 			}
 		}
 	}
